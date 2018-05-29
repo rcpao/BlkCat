@@ -1,0 +1,61 @@
+
+## @file
+#  TODO: Brief Description of UEFI Driver BlkCat
+#  
+#  TODO: Detailed Description of UEFI Driver BlkCat
+#
+#  TODO: Copyright for UEFI Driver BlkCat
+#  
+#  TODO: License for UEFI Driver BlkCat
+#  
+##
+
+[Defines]
+  INF_VERSION               = 0x00010005
+  BASE_NAME                 = BlkCat
+  FILE_GUID                 = d029d3dc-6362-11e8-a3fd-0028f8798579
+  MODULE_TYPE               = UEFI_DRIVER
+
+  VERSION_STRING            = 0.1
+  ENTRY_POINT               = BlkCatDriverEntryPoint
+  MODULE_UNI_FILE           = BlkCatModStrs.uni
+
+
+[UserExtensions.TianoCore."ExtraFiles"]
+  BlkCatExtra.uni
+
+[Packages]
+  MdePkg/MdePkg.dec
+
+[Sources]
+  BlkCat.h
+  BlkCat.c
+  ComponentName.c
+  ComponentName.h
+  BlockIo.c
+  BlockIo.h
+
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  BaseLib
+  UefiLib
+  DevicePathLib
+  DebugLib
+
+
+[Protocols]
+  gEfiPciIoProtocolGuid                         ## TO_START
+  gEfiDriverBindingProtocolGuid                 ## ALWAYS_PRODUCES
+  gEfiDriverSupportedEfiVersionProtocolGuid     ## ALWAYS_PRODUCES
+  gEfiComponentName2ProtocolGuid                ## ALWAYS_PRODUCES
+  gEfiComponentNameProtocolGuid                 ## ALWAYS_PRODUCES
+  gEfiBlockIoProtocolGuid                       ## BY_START
+  gEfiBlockIo2ProtocolGuid                      ## BY_START
+
+
+[Guids]
+
