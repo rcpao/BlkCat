@@ -55,4 +55,6 @@ pushd $UDK2014_IHV_DIR
 
   build_gccversion
   build -v -t ${BLD_TOOL_CHAIN_TAG} -a X64 -p $PROJECT_NAME/$PROJECT_NAME.dsc
+
+  ls -l Build/BlkCatPkg/DEBUG_GCC48/X64/
 popd
