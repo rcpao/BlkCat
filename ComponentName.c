@@ -139,6 +139,7 @@ BlkCatComponentNameGetControllerName (
     return EFI_UNSUPPORTED;
   }
 
+#if 0
   //
   // Make sure this driver is currently managing ControllerHandle
   //
@@ -150,6 +151,7 @@ BlkCatComponentNameGetControllerName (
   if (EFI_ERROR (Status)) {
     return Status;
   }
+#endif
 
   //
   // Lookup name of controller specified by ControllerHandle
