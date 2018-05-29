@@ -1,12 +1,13 @@
 
 /** @file
-  TODO: Brief Description of UEFI Driver BlkCat
-  
-  TODO: Detailed Description of UEFI Driver BlkCat
+BlkCat -- UEFI Block Device Concatenator Driver
+Copyright (C) 2018 Roger C. Pao.  All rights reserved.
 
-  TODO: Copyright for UEFI Driver BlkCat
+https://github.com/rcpao/BlkCat
+
+Roger C. Pao <rcpao+BlkCatEfi@gmail.com>
   
-  TODO: License for UEFI Driver BlkCat
+Apache License 2.0
 
 **/
 
