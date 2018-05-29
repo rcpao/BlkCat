@@ -74,6 +74,7 @@ extern EFI_COMPONENT_NAME_PROTOCOL  gBlkCatComponentName;
 #include "DriverBinding.h"
 #include "ComponentName.h"
 #include "BlockIo.h"
+#include "pr.h"
 
 
 #endif

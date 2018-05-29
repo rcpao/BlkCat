@@ -35,6 +35,9 @@
   ComponentName.h
   BlockIo.c
   BlockIo.h
+  pr.c
+  pr.h
+  pr-cfg.h
 
 
 [LibraryClasses]

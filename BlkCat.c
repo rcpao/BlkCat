@@ -52,12 +52,18 @@ BlkCatUnload (
   IN EFI_HANDLE  ImageHandle
   )
 {
+#undef FN
+#define FN "BlkCatUnload"
+#define DBG_BlkCatUnload DL_80 /* DL_DISABLED DL_80 */
+
   EFI_STATUS  Status;
 
   EFI_HANDLE  *HandleBuffer;
   UINTN       HandleCount;
   UINTN       Index;
 
+
+  DBG_PR(DBG_BlkCatUnload, "ImageHandle=%"PRIx64"\n", ImageHandle);
 
   Status = EFI_SUCCESS;
 
@@ -121,7 +127,8 @@ BlkCatUnload (
   //
 
   return EFI_SUCCESS;
-}
+} /* BlkCatUnload */
+
 
 /**
   This is the declaration of an EFI image entry point. This entry point is
@@ -141,8 +148,14 @@ BlkCatDriverEntryPoint (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
+#undef FN
+#define FN "BlkCatDriverEntryPoint"
+#define DBG_BlkCatDriverEntryPoint DL_DISABLED /* DL_DISABLED DL_80 */
+
   EFI_STATUS  Status;
 
+
+  DBG_PR(DBG_BlkCatUnload, "ImageHandle=%"PRIx64" SystemTable=%"PRIx64" \n", ImageHandle, SystemTable);
 
   Status = EFI_SUCCESS;
 
@@ -173,7 +186,7 @@ BlkCatDriverEntryPoint (
 
 
   return Status;
-}
+} /* BlkCatDriverEntryPoint */
 
 
 /**
@@ -226,8 +239,14 @@ BlkCatDriverBindingSupported (
   IN EFI_DEVICE_PATH_PROTOCOL     *RemainingDevicePath OPTIONAL
   )
 {
+#undef FN
+#define FN "BlkCatDriverBindingSupported"
+#define DBG_BlkCatDriverBindingSupported DL_80 /* DL_DISABLED DL_80 */
+
+  DBG_PR(DBG_BlkCatUnload, "This=%"PRIx64" ControllerHandle=%"PRIx64" RemainingDevicePath=%p\n", This, ControllerHandle, RemainingDevicePath);
+
   return EFI_UNSUPPORTED;
-}
+} /* BlkCatDriverBindingSupported */
 
 /**
   Starts a device controller or a bus controller.
@@ -272,8 +291,15 @@ BlkCatDriverBindingStart (
   IN EFI_DEVICE_PATH_PROTOCOL     *RemainingDevicePath OPTIONAL
   )
 {
+#undef FN
+#define FN "BlkCatDriverBindingStart"
+#define DBG_BlkCatDriverBindingStart DL_80 /* DL_DISABLED DL_80 */
+
+  DBG_PR(DBG_BlkCatUnload, "This=%"PRIx64" ControllerHandle=%"PRIx64" RemainingDevicePath=%p\n", This, ControllerHandle, RemainingDevicePath);
+
   return EFI_UNSUPPORTED;
-}
+} /* BlkCatDriverBindingStart */
+
 
 /**
   Stops a device controller or a bus controller.
@@ -310,5 +336,11 @@ BlkCatDriverBindingStop (
   IN EFI_HANDLE                   *ChildHandleBuffer OPTIONAL
   )
 {
+#undef FN
+#define FN "BlkCatDriverBindingStop"
+#define DBG_BlkCatDriverBindingStop DL_80 /* DL_DISABLED DL_80 */
+
+  DBG_PR(DBG_BlkCatUnload, "This=%"PRIx64" ControllerHandle=%"PRIx64" NumberOfChildren=%d ChildHandleBuffer=%p\n", This, ControllerHandle, NumberOfChildren, ChildHandleBuffer);
+
   return EFI_UNSUPPORTED;
-}
+} /* BlkCatDriverBindingStop */
