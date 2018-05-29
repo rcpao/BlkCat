@@ -57,4 +57,6 @@ pushd $UDK2014_IHV_DIR
   build -v -t ${BLD_TOOL_CHAIN_TAG} -a X64 -p $PROJECT_NAME/$PROJECT_NAME.dsc
 
   ls -l Build/BlkCatPkg/DEBUG_GCC48/X64/
+  cp Build/BlkCatPkg/DEBUG_GCC48/X64/BlkCat.efi .
+  [ -d ~/Documents/ovmf-run/hda-contents/ ] && cp Build/BlkCatPkg/DEBUG_GCC48/X64/BlkCat.efi ~/Documents/ovmf-run/hda-contents/
 popd
