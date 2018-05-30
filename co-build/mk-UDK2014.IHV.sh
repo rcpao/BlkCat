@@ -5,6 +5,16 @@
 
 
 
+build_bld_num() {
+  BLD_NUM_FN=$PROJECT_DIR/bldnum.txt
+  [ ! -f $BLD_NUM_FN ] && echo "0" > $BLD_NUM_FN
+  OLD_BLD_NUM=`cat $BLD_NUM_FN`
+  BLD_NUM=`expr $OLD_BLD_NUM + 1`
+  sed -i "s/$OLD_BLD_NUM/$BLD_NUM/" $BLD_NUM_FN
+  echo "#define BLD_NUM $BLD_NUM" > $PROJECT_DIR/bldnum.h
+} #build_bld_num
+
+
 build_gccversion() {
   # Create the GCC version specific TOOL_CHAIN_TAG = GCC44 to GCC49 as
   # defined in $EDKDIR/Conf/tools_def.txt.
@@ -30,7 +40,7 @@ build_gccversion() {
 pushd ..
   PROJECT_DIR=`pwd`
   PROJECT_NAME=`basename $PROJECT_DIR`
-popd
+popd #..
 
 
 UDK2014_IHV_zip=~/Downloads/UDK2014.IHV.zip
@@ -46,13 +56,15 @@ pushd $UDK2014_IHV_DIR
     if [ ! -f $BASETOOLS_MAKE_TXT ]; then
       make > $BASETOOLS_MAKE_TXT 2>&1
     fi
-  popd
+  popd #BaseTools
   [ -x $EDKSETUP_SH ] && source $EDKSETUP_SH
 
   if [ ! -L $PROJECT_NAME ]; then
     ln -s $PROJECT_DIR $PROJECT_NAME
   fi
 
+
+  build_bld_num
   build_gccversion
   build -v -t ${BLD_TOOL_CHAIN_TAG} -a X64 -p $PROJECT_NAME/$PROJECT_NAME.dsc
 
@@ -60,4 +72,5 @@ pushd $UDK2014_IHV_DIR
   cp Build/BlkCatPkg/DEBUG_GCC48/X64/BlkCat.efi .
   [ -d ~/Documents/job/enmotus.com/en_uefi/ovmf-run/hda-contents/ ] && cp Build/BlkCatPkg/DEBUG_GCC48/X64/BlkCat.efi ~/Documents/job/enmotus.com/en_uefi/ovmf-run/hda-contents/
   [ -d ~/Documents/ovmf-run/hda-contents/ ] && cp Build/BlkCatPkg/DEBUG_GCC48/X64/BlkCat.efi ~/Documents/ovmf-run/hda-contents/
-popd
+
+popd #$UDK2014_IHV_DIR 

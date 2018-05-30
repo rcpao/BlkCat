@@ -6,7 +6,7 @@ Copyright (C) 2018 Roger C. Pao.  All rights reserved.
 https://github.com/rcpao/BlkCat
 
 Roger C. Pao <rcpao+BlkCatEfi@gmail.com>
-  
+
 Apache License 2.0
 
 **/
@@ -74,6 +74,7 @@ extern EFI_COMPONENT_NAME_PROTOCOL  gBlkCatComponentName;
 #include "DriverBinding.h"
 #include "ComponentName.h"
 #include "BlockIo.h"
+#include "bldnum.h"
 #include "pr.h"
 
 
