@@ -4,8 +4,8 @@
 #
 #  https://github.com/rcpao/BlkCat
 #
-#  Roger C. Pao <rcpao+BlkCatEfi@gmail.com>
-#  
+#  Roger C. Pao <rcpao+BlkCatEfi(at)gmail.com>
+#
 #  Apache License 2.0
 #
 ##
@@ -43,7 +43,7 @@
   PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
 
   DebugLib|MdePkg/Library/UefiDebugLibStdErr/UefiDebugLibStdErr.inf
-  DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf  
+  DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf
   PostCodeLib|MdePkg/Library/BasePostCodeLibPort80/BasePostCodeLibPort80.inf
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
 

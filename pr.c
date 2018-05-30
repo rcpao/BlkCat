@@ -4,8 +4,8 @@ Copyright (C) 2018 Roger C. Pao.  All rights reserved.
 
 https://github.com/rcpao/BlkCat
 
-Roger C. Pao <rcpao+BlkCatEfi@gmail.com>
-  
+Roger C. Pao <rcpao+BlkCatEfi(at)gmail.com>
+
 Apache License 2.0
 
 **/
@@ -280,7 +280,7 @@ UINT64 PrBufxxdr(void *pBuf, UINTN Length) {
 PrCapacityDec
 
 From en_bootier/init-asap.nasm
- 
+
 ;-----------------------------------------------------------------------------
 ;PrCapacityDec
 ;  Print capacity (decimal) using the largest non-zero specific unit
@@ -440,7 +440,7 @@ dblkf -b0 1474560 1.474 MB
 dblkf malloc((lbanum=0x0)*(BlockBytes=0x200)=(BufferBytes=0x0)) = (pBuffer=0x0)
 dblkf malloc((lbanum=0x0)*(BlockBytes=0x200)=(BufferBytes=0x0)) = (pBuffer=0x0)
 dblkf ReadBlocks() error No Media
-FS0:\> 
+FS0:\>
 */
 
 void PrCapacityDec1000_000(UINT64 capacity) {
@@ -516,7 +516,7 @@ void PrCapacityDec1000_000(UINT64 capacity) {
   }
 
   prevcap %= Divisor;
-  
+
   if (PrVerboseLevel > VL_SILENT) {
 #if (USE_ASCII_PRINT)
     AsciiPrint("%lld.%03lld %a", capacity, prevcap, capUnits[capUnit]);
@@ -678,7 +678,7 @@ void PrCapacityDec1024(UINT64 capacity) {
   }
 
   prevcap %= Divisor;
-  
+
   if (PrVerboseLevel > VL_SILENT) {
 #if (USE_ASCII_PRINT)
     AsciiPrint("%lld %a", capacity, capUnits[capUnit]);

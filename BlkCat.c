@@ -5,7 +5,7 @@ Copyright (C) 2018 Roger C. Pao.  All rights reserved.
 
 https://github.com/rcpao/BlkCat
 
-Roger C. Pao <rcpao+BlkCatEfi@gmail.com>
+Roger C. Pao <rcpao+BlkCatEfi(at)gmail.com>
 
 Apache License 2.0
 
@@ -192,9 +192,13 @@ BlkCatDriverEntryPoint (
   EFI_STATUS  Status;
 
 
+  /* PR() in DriverEntry is a no op if embedded in UEFI firmware (maybe 'bcfg driver add' is also silent). */
   PR(
     DRIVER_NAME_STR
-    ".efi v0.1.%d\n", BLD_NUM
+    ".efi v"
+    VERSION_STR
+    "\n",
+    BLD_NUM
   );
   DBG_PR(DBG_BlkCatDriverEntryPoint, "ImageHandle=%"PRIx64" SystemTable=%"PRIx64" \n", ImageHandle, SystemTable);
 
@@ -228,7 +232,7 @@ BlkCatDriverEntryPoint (
     (VOID *)&TierDiskDevicePathTemplate
   );
   DBG_PR(DBG_BlkCatDriverEntryPoint, "InstallMultipleProtocolInterfaces gEfiDevicePathProtocolGuid TierDiskDevicePathTemplate '%r'\n", Status);
-  ASSERT_EFI_ERROR (Status);
+  ASSERT_EFI_ERROR (Status); /* ASSERT_EFI_ERROR() does not actually exit!  Without DEBUG firmware, it is a no op. */
   if (EFI_ERROR(Status)) goto ReturnStatus;
 #endif
 
@@ -265,7 +269,10 @@ ReturnStatus:
   if (EFI_ERROR(Status)) {
     PR(
       DRIVER_NAME_STR
-      ".efi v0.1.%d error '%r'\n", BLD_NUM, Status
+      ".efi v"
+      VERSION_STR
+      " '%r'\n",
+      BLD_NUM, Status
     );
   }
 
@@ -325,11 +332,108 @@ BlkCatDriverBindingSupported (
 {
 #undef FN
 #define FN "BlkCatDriverBindingSupported"
-#define DBG_BlkCatDriverBindingSupported DL_DISABLED /* DL_DISABLED DL_80 */
+#define DBG_BlkCatDriverBindingSupported DL_80 /* DL_DISABLED DL_80 */
 
-  DBG_PR(DBG_BlkCatDriverBindingSupported, "This=%"PRIx64" ControllerHandle=%"PRIx64" RemainingDevicePath=%p\n", This, ControllerHandle, RemainingDevicePath);
+  EFI_STATUS Status = EFI_SUCCESS;
 
-  return EFI_UNSUPPORTED;
+
+  //DBG_PR(DBG_BlkCatDriverBindingSupported, "This=%"PRIx64" ControllerHandle=%"PRIx64" RemainingDevicePath=%p\n", This, ControllerHandle, RemainingDevicePath);
+
+
+#if 1
+  /* from C:\edk2\MdeModulePkg\Universal\Disk\PartitionDxe\Partition.c */
+  //
+  // Check RemainingDevicePath validation
+  //
+  if (RemainingDevicePath != NULL) {
+    //
+    // Check if RemainingDevicePath is the End of Device Path Node,
+    // if yes, go on checking other conditions
+    //
+    if (!IsDevicePathEnd(RemainingDevicePath)) {
+      EFI_DEV_PATH *Node;
+      //
+      // If RemainingDevicePath isn't the End of Device Path Node,
+      // check its validation
+      //
+      Node = (EFI_DEV_PATH *)RemainingDevicePath;
+      if (
+        (Node->DevPath.Type != MEDIA_DEVICE_PATH) ||
+        (Node->DevPath.SubType != MEDIA_HARDDRIVE_DP) ||
+        (DevicePathNodeLength(&Node->DevPath) != sizeof(HARDDRIVE_DEVICE_PATH))
+      ) {
+        //return (EFI_UNSUPPORTED);
+        Status = EFI_UNSUPPORTED; goto ReturnStatus;
+      }
+    }
+  }
+#endif
+
+
+#if 1
+  /* from C:\edk2\MdeModulePkg\Universal\Disk\PartitionDxe\Partition.c */
+  {
+    EFI_DEVICE_PATH_PROTOCOL *ParentDevicePath;
+
+    //
+    // Open the EFI Device Path protocol needed to perform the supported test
+    //
+    Status = gBS->OpenProtocol(
+      ControllerHandle,
+      &gEfiDevicePathProtocolGuid,
+      (VOID **)&ParentDevicePath,
+      This->DriverBindingHandle,
+      ControllerHandle,
+      EFI_OPEN_PROTOCOL_BY_DRIVER
+    );
+#if 1 //TBD
+    if (Status == EFI_ALREADY_STARTED) {
+      DBG_PR(DBG_BlkCatDriverBindingSupported, "gEfiDevicePathProtocolGuid %r but returning EFI_SUCCESS\n", Status);
+      //return (EFI_SUCCESS);
+      Status = EFI_SUCCESS; goto ReturnStatus;
+    }
+#endif
+    if (EFI_ERROR(Status)) {
+      //DBG_PR(DBG_BlkCatDriverBindingSupported, "gEfiDevicePathProtocolGuid %r\n", Status);
+      //return (Status);
+      goto ReturnStatus;
+    }
+
+    //
+    // Close protocol, don't use device path protocol in the Support() function
+    //
+    gBS->CloseProtocol(
+      ControllerHandle,
+      &gEfiDevicePathProtocolGuid,
+      This->DriverBindingHandle,
+      ControllerHandle
+    );
+  }
+#endif /* #if 1 */
+
+
+#if 1
+  /* from C:\edk2\MdeModulePkg\Universal\Disk\PartitionDxe\Partition.c */
+  //
+  // Open the IO Abstraction(s) needed to perform the supported test
+  //
+  Status = gBS->OpenProtocol(
+    ControllerHandle,
+    &gEfiBlockIoProtocolGuid,
+    NULL,
+    This->DriverBindingHandle,
+    ControllerHandle,
+    EFI_OPEN_PROTOCOL_TEST_PROTOCOL
+  );
+  /* EFI_OPEN_PROTOCOL_TEST_PROTOCOL does not require CloseProtocol() */
+#endif /* #if 1 */
+
+  DBG_PR(DBG_BlkCatDriverBindingSupported, "leaving EFI_OPEN_PROTOCOL_TEST_PROTOCOL='%r'\n", Status);
+
+
+ReturnStatus:
+
+  return (Status);
 } /* BlkCatDriverBindingSupported */
 
 /**

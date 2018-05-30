@@ -5,8 +5,8 @@ Copyright (C) 2018 Roger C. Pao.  All rights reserved.
 
 https://github.com/rcpao/BlkCat
 
-Roger C. Pao <rcpao+BlkCatEfi@gmail.com>
-  
+Roger C. Pao <rcpao+BlkCatEfi(at)gmail.com>
+
 Apache License 2.0
 
 **/
@@ -16,7 +16,7 @@ Apache License 2.0
 ///
 /// Block I/O Media structure
 ///
-GLOBAL_REMOVE_IF_UNREFERENCED 
+GLOBAL_REMOVE_IF_UNREFERENCED
 EFI_BLOCK_IO_MEDIA  gBlkCatBlockIoMedia = {
   0,      // MediaId
   FALSE,  // RemovableMedia
@@ -35,7 +35,7 @@ EFI_BLOCK_IO_MEDIA  gBlkCatBlockIoMedia = {
 ///
 /// Block I/O Protocol instance
 ///
-GLOBAL_REMOVE_IF_UNREFERENCED 
+GLOBAL_REMOVE_IF_UNREFERENCED
 EFI_BLOCK_IO_PROTOCOL  gBlkCatBlockIo = {
   EFI_BLOCK_IO_PROTOCOL_REVISION3,             // Revision
   &gBlkCatBlockIoMedia,                // Media
@@ -48,7 +48,7 @@ EFI_BLOCK_IO_PROTOCOL  gBlkCatBlockIo = {
 ///
 /// Block I/O 2 Protocol instance
 ///
-GLOBAL_REMOVE_IF_UNREFERENCED 
+GLOBAL_REMOVE_IF_UNREFERENCED
 EFI_BLOCK_IO2_PROTOCOL  gBlkCatBlockIo2 = {
   &gBlkCatBlockIoMedia,        // Media
   BlkCatBlockIoReset,          // Reset
@@ -72,7 +72,7 @@ EFI_BLOCK_IO2_PROTOCOL  gBlkCatBlockIo2 = {
   @retval EFI_NO_MEDIA          There is no media in the device.
   @retval EFI_MEDIA_CHANGED     The MediaId does not matched the current device.
   @retval EFI_BAD_BUFFER_SIZE   The Buffer was not a multiple of the block size of the device.
-  @retval EFI_INVALID_PARAMETER The read request contains LBAs that are not valid, 
+  @retval EFI_INVALID_PARAMETER The read request contains LBAs that are not valid,
                                 or the buffer is not on proper alignment.
 
 **/
@@ -105,7 +105,7 @@ BlkCatBlockIoReadBlocks (
   @retval EFI_NO_MEDIA          There is no media in the device.
   @retval EFI_MEDIA_CHNAGED     The MediaId does not matched the current device.
   @retval EFI_BAD_BUFFER_SIZE   The Buffer was not a multiple of the block size of the device.
-  @retval EFI_INVALID_PARAMETER The write request contains LBAs that are not valid, 
+  @retval EFI_INVALID_PARAMETER The write request contains LBAs that are not valid,
                                 or the buffer is not on proper alignment.
 
 **/
@@ -166,7 +166,7 @@ BlkCatBlockIoReset (
 
 /**
   Read BufferSize bytes from Lba into Buffer.
-  
+
   This function reads the requested number of blocks from the device. All the
   blocks are read, or an error is returned.
   If EFI_DEVICE_ERROR, EFI_NO_MEDIA,_or EFI_MEDIA_CHANGED is returned and
@@ -174,13 +174,13 @@ BlkCatBlockIoReset (
   not be signaled.
 
   @param[in]       This       Indicates a pointer to the calling context.
-  @param[in]       MediaId    Id of the media, changes every time the media is 
+  @param[in]       MediaId    Id of the media, changes every time the media is
                               replaced.
   @param[in]       Lba        The starting Logical Block Address to read from.
   @param[in, out]  Token	    A pointer to the token associated with the transaction.
-  @param[in]       BufferSize Size of Buffer, must be a multiple of device block size.  
-  @param[out]      Buffer     A pointer to the destination buffer for the data. The 
-                              caller is responsible for either having implicit or 
+  @param[in]       BufferSize Size of Buffer, must be a multiple of device block size.
+  @param[out]      Buffer     A pointer to the destination buffer for the data. The
+                              caller is responsible for either having implicit or
                               explicit ownership of the buffer.
 
   @retval EFI_SUCCESS           The read request was queued if Token->Event is
@@ -192,7 +192,7 @@ BlkCatBlockIoReset (
   @retval EFI_MEDIA_CHANGED     The MediaId is not for the current media.
   @retval EFI_BAD_BUFFER_SIZE   The BufferSize parameter is not a multiple of the
                                 intrinsic block size of the device.
-  @retval EFI_INVALID_PARAMETER The read request contains LBAs that are not valid, 
+  @retval EFI_INVALID_PARAMETER The read request contains LBAs that are not valid,
                                 or the buffer is not on proper alignment.
   @retval EFI_OUT_OF_RESOURCES  The request could not be completed due to a lack
                                 of resources.
@@ -236,7 +236,7 @@ BlkCatBlockIoReadBlocksEx (
   @retval EFI_MEDIA_CHNAGED     The MediaId does not matched the current device.
   @retval EFI_DEVICE_ERROR      The device reported an error while performing the write.
   @retval EFI_BAD_BUFFER_SIZE   The Buffer was not a multiple of the block size of the device.
-  @retval EFI_INVALID_PARAMETER The write request contains LBAs that are not valid, 
+  @retval EFI_INVALID_PARAMETER The write request contains LBAs that are not valid,
                                 or the buffer is not on proper alignment.
   @retval EFI_OUT_OF_RESOURCES  The request could not be completed due to a lack
                                 of resources.
@@ -258,10 +258,10 @@ BlkCatBlockIoWriteBlocksEx (
 
 /**
   Flush the Block Device.
- 
+
   If EFI_DEVICE_ERROR, EFI_NO_MEDIA,_EFI_WRITE_PROTECTED or EFI_MEDIA_CHANGED
   is returned and non-blocking I/O is being used, the Event associated with
-  this request will not be signaled.  
+  this request will not be signaled.
 
   @param[in]      This     Indicates a pointer to the calling context.
   @param[in,out]  Token    A pointer to the token associated with the transaction

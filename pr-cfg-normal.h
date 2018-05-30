@@ -4,8 +4,8 @@ Copyright (C) 2018 Roger C. Pao.  All rights reserved.
 
 https://github.com/rcpao/BlkCat
 
-Roger C. Pao <rcpao+BlkCatEfi@gmail.com>
-  
+Roger C. Pao <rcpao+BlkCatEfi(at)gmail.com>
+
 Apache License 2.0
 
 **/
@@ -13,8 +13,8 @@ Apache License 2.0
 /* ---------------------------------------------------------------------------
 pr-cfg-normal.h
 
-This file is copied to pr-cfg.h by mk-build-dbg.bat and 
-#included by "pr.h" to display messages during load via Driver Options, 
+This file is copied to pr-cfg.h by mk-build-dbg.bat and
+#included by "pr.h" to display messages during load via Driver Options,
 v1shell, or v2shell.
 --------------------------------------------------------------------------- */
 
