@@ -35,7 +35,7 @@ popd
 
 UDK2014_IHV_zip=~/Downloads/UDK2014.IHV.zip
 UDK2014_IHV_DIR=UDK2014.IHV
-[ ! -f $UDK2014_IHV_zip ] && wget https://github.com/tianocore-docs/Docs/raw/master/Driver_Developer/UDK2014.IHV.zip
+[ ! -f $UDK2014_IHV_zip ] && wget https://github.com/tianocore-docs/Docs/raw/master/Driver_Developer/UDK2014.IHV.zip && mv UDK2014.IHV.zip $UDK2014_IHV_zip
 [ ! -d $UDK2014_IHV_DIR ] && unzip $UDK2014_IHV_zip
 
 pushd $UDK2014_IHV_DIR 
@@ -58,5 +58,6 @@ pushd $UDK2014_IHV_DIR
 
   ls -l Build/BlkCatPkg/DEBUG_GCC48/X64/
   cp Build/BlkCatPkg/DEBUG_GCC48/X64/BlkCat.efi .
+  [ -d ~/Documents/job/enmotus.com/en_uefi/ovmf-run/hda-contents/ ] && cp Build/BlkCatPkg/DEBUG_GCC48/X64/BlkCat.efi ~/Documents/job/enmotus.com/en_uefi/ovmf-run/hda-contents/
   [ -d ~/Documents/ovmf-run/hda-contents/ ] && cp Build/BlkCatPkg/DEBUG_GCC48/X64/BlkCat.efi ~/Documents/ovmf-run/hda-contents/
 popd
