@@ -428,7 +428,7 @@ BlkCatDriverBindingSupported (
   /* EFI_OPEN_PROTOCOL_TEST_PROTOCOL does not require CloseProtocol() */
 #endif /* #if 1 */
 
-  DBG_PR(DBG_BlkCatDriverBindingSupported, "leaving EFI_OPEN_PROTOCOL_TEST_PROTOCOL='%r'\n", Status);
+  //DBG_PR(DBG_BlkCatDriverBindingSupported, "leaving EFI_OPEN_PROTOCOL_TEST_PROTOCOL='%r'\n", Status);
 
 
 ReturnStatus:
@@ -482,10 +482,141 @@ BlkCatDriverBindingStart (
 #undef FN
 #define FN "BlkCatDriverBindingStart"
 #define DBG_BlkCatDriverBindingStart DL_80 /* DL_DISABLED DL_80 */
+  EFI_TPL OldTpl;
+  EFI_BLOCK_IO_PROTOCOL *BlockIo;
+  //EFI_DISK_IO_PROTOCOL *DiskIo;
+  EFI_DEVICE_PATH_PROTOCOL *ParentDevicePath;
+  BOOLEAN MediaPresent;
+  //EFI_STATUS OpenStatus;
+  EFI_STATUS Status = EFI_UNSUPPORTED;
+
 
   DBG_PR(DBG_BlkCatDriverBindingStart, "This=%"PRIx64" ControllerHandle=%"PRIx64" RemainingDevicePath=%p\n", This, ControllerHandle, RemainingDevicePath);
 
-  return EFI_UNSUPPORTED;
+
+  /* from C:\edk2\MdeModulePkg\Universal\Disk\PartitionDxe\Partition.c */
+  OldTpl = gBS->RaiseTPL(TPL_CALLBACK);
+  //
+  // Check RemainingDevicePath validation
+  //
+  if (RemainingDevicePath != NULL) {
+    //
+    // Check if RemainingDevicePath is the End of Device Path Node,
+    // if yes, return EFI_SUCCESS
+    //
+    if (IsDevicePathEnd(RemainingDevicePath)) {
+      DBG_PR(DBG_BlkCatDriverBindingStart, "RemainingDevicePath %x = END\n", RemainingDevicePath);
+      Status = EFI_SUCCESS;
+      goto ReturnStatus;
+    }
+  }
+
+
+  #if 1
+    /* from C:\edk2\MdeModulePkg\Universal\Disk\PartitionDxe\Partition.c */
+    //
+    // Try to open BlockIO. If BlockIO would be opened, continue,
+    // otherwise, return error.
+    //
+    Status = gBS->OpenProtocol(
+      ControllerHandle,
+      &gEfiBlockIoProtocolGuid,
+      (VOID **)&BlockIo,
+      This->DriverBindingHandle,
+      ControllerHandle,
+      EFI_OPEN_PROTOCOL_GET_PROTOCOL
+    );
+    if (EFI_ERROR(Status)) {
+      DBG_PR(DBG_BlkCatDriverBindingStart, "gEfiBlockIoProtocolGuid %r\n", Status);
+      goto ReturnStatus;
+    }
+    /* EFI_OPEN_PROTOCOL_GET_PROTOCOL does not require CloseProtocol(). */
+  #endif
+
+
+#if 1
+    {
+      /* from C:\edk2\MdeModulePkg\Universal\Disk\PartitionDxe\Partition.c */
+      //
+      // Get the Device Path Protocol on ControllerHandle's handle.
+      //
+      Status = gBS->OpenProtocol(
+        ControllerHandle,
+        &gEfiDevicePathProtocolGuid,
+        (VOID **)&ParentDevicePath,
+        This->DriverBindingHandle,
+        ControllerHandle,
+        EFI_OPEN_PROTOCOL_BY_DRIVER
+      );
+      if (EFI_ERROR(Status) && Status != EFI_ALREADY_STARTED) {
+        DBG_PR(DBG_BlkCatDriverBindingStart, "gEfiDevicePathProtocolGuid %r\n", Status);
+        goto ReturnStatus;
+      }
+
+      //AsciiPrint(" '%s'\n", ConvertDevicePathToText(DevicePathFromHandle(BlockIo), TRUE, TRUE));
+  }
+#endif
+
+
+#if 1
+    Status = EFI_UNSUPPORTED;
+    MediaPresent = BlockIo->Media->MediaPresent;
+    if (BlockIo->Media->MediaPresent ||
+      (BlockIo->Media->RemovableMedia && !BlockIo->Media->LogicalPartition)) {
+        UINT64 Capacity;
+
+
+        PR("$=0x%"PRIx64"=%lld bs=0x%"PRIx64"=%lld '",
+          BlockIo->Media->LastBlock,
+          BlockIo->Media->LastBlock,
+          BlockIo->Media->BlockSize,
+          BlockIo->Media->BlockSize
+        );
+        Capacity = InternalMathMultU64x32(BlockIo->Media->LastBlock + 1, BlockIo->Media->BlockSize);
+        PrCapacityDec1000_000(Capacity);
+        AsciiPrint("' %a", (BlockIo->Media->LogicalPartition)? "(partition)": "");
+        AsciiPrint("%a", (BlockIo->Media->MediaPresent)? "": "(no media)");
+        AsciiPrint("%a", (BlockIo->Media->ReadOnly)? "(ro)": "");
+        AsciiPrint("\n");
+        AsciiPrint("  This='%s'\n",
+          ConvertDevicePathToText(DevicePathFromHandle(This), TRUE, TRUE)
+        );
+        AsciiPrint("  ControllerHandle='%s'\n",
+          ConvertDevicePathToText(DevicePathFromHandle(ControllerHandle), TRUE, TRUE)
+        );
+        AsciiPrint("  BlockIo='%s'\n",
+          ConvertDevicePathToText(DevicePathFromHandle(BlockIo), TRUE, TRUE)
+        );
+        AsciiPrint("  ParentDevicePath='%s'\n",
+          ConvertDevicePathToText(DevicePathFromHandle(ParentDevicePath), TRUE, TRUE)
+        );
+        AsciiPrint("  This->DriverBindingHandle='%s'\n",
+          ConvertDevicePathToText(DevicePathFromHandle(This->DriverBindingHandle), TRUE, TRUE)
+        );
+
+  	  /* Install the BlkCat Disks */
+  	  //Status = InstallBlkCatDisks(This, ControllerHandle); /* Driver Options works in GA-990FX-Gaming, fails in MinnowBoard Turbot */
+  	  //Status = InstallBlkCatDisks(This->DriverBindingHandle); /* Driver Options fails */
+  	  /*
+  	  http://wiki.phoenix.com/wiki/index.php/EFI_BOOT_SERVICES#OpenProtocol.28.29
+  	    AgentHandle
+  	    The handle of the agent that is opening the protocol interface specified by Protocol and Interface. For agents that follow the UEFI Driver Model, this parameter is the handle that contains the EFI_DRIVER_BINDING_PROTOCOL instance that is produced by the UEFI driver that is opening the protocol interface. For UEFI applications, this is the image handle of the UEFI application that is opening the protocol interface. For applications that use HandleProtocol() to open a protocol interface, this parameter is the image handle of the EFI firmware.
+  	  */
+  	  //DBG_PR(DBG_BlkCatDriverBindingStart, "after InstallBlkCatDisks %r\n", Status);
+  	  if (EFI_ERROR(Status)) {
+  	    //DBG_PR(DBG_BlkCatDriverBindingStart, "InstallBlkCatDisks failed %r\n", Status);
+        goto ReturnStatus;
+  	    //return (Status);
+  	  }
+    }
+#endif
+
+
+ReturnStatus:
+  gBS->RestoreTPL(OldTpl);
+
+  return (Status);
+
 } /* BlkCatDriverBindingStart */
 
 

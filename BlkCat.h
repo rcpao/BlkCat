@@ -71,6 +71,7 @@ extern EFI_COMPONENT_NAME_PROTOCOL  gBlkCatComponentName;
 //
 // Include files with function prototypes
 //
+#include <Library/BaseLib/BaseLibInternals.h> /* InternalMathMultU64x64 */
 #include "DriverBinding.h"
 #include "ComponentName.h"
 #include "BlockIo.h"
