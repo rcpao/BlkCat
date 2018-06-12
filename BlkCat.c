@@ -484,6 +484,7 @@ BlkCatDriverBindingStart (
 #define DBG_BlkCatDriverBindingStart DL_80 /* DL_DISABLED DL_80 */
   EFI_TPL OldTpl;
   EFI_BLOCK_IO_PROTOCOL *BlockIo;
+  CHAR8 *pBlock;
   //EFI_DISK_IO_PROTOCOL *DiskIo;
   EFI_DEVICE_PATH_PROTOCOL *ParentDevicePath;
   BOOLEAN MediaPresent;
@@ -554,7 +555,7 @@ BlkCatDriverBindingStart (
       }
 
       //AsciiPrint(" '%s'\n", ConvertDevicePathToText(DevicePathFromHandle(BlockIo), TRUE, TRUE));
-  }
+    }
 #endif
 
 
@@ -593,6 +594,30 @@ BlkCatDriverBindingStart (
         AsciiPrint("  This->DriverBindingHandle='%s'\n",
           ConvertDevicePathToText(DevicePathFromHandle(This->DriverBindingHandle), TRUE, TRUE)
         );
+
+
+        Status = gBS->AllocatePool(EfiBootServicesData, BlockIo->Media->BlockSize, (VOID **)&pBlock);
+        if (EFI_ERROR(Status)) {
+    	    DBG_PR(DBG_BlkCatDriverBindingStart, "AllocatePool(%d) '%r'\n", BlockIo->Media->BlockSize, Status);
+          goto ReturnStatus;
+    	    //return (Status);
+    	  }
+        SetMem(pBlock, BlockIo->Media->BlockSize, 0); /* memset */
+
+        Status = BlockIo->ReadBlocks(
+          BlockIo,
+          BlockIo->Media->MediaId,
+          0 /* LBA0 */,
+          BlockIo->Media->BlockSize,
+          pBlock
+        );
+        if (EFI_ERROR(Status)) {
+    	    DBG_PR(DBG_BlkCatDriverBindingStart, "ReadBlocks(%d) '%r'\n", BlockIo->Media->BlockSize, Status);
+          goto ReturnStatus;
+    	    //return (Status);
+    	  }
+        DBG_X(DBG_BlkCatDriverBindingStart, (PrBufxxdr(pBlock, BlockIo->Media->BlockSize)));
+
 
   	  /* Install the BlkCat Disks */
   	  //Status = InstallBlkCatDisks(This, ControllerHandle); /* Driver Options works in GA-990FX-Gaming, fails in MinnowBoard Turbot */
